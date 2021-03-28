@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -16,4 +13,95 @@ model Admin {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id           String        @id @default(uuid())
+  username     String        @unique
+  password     String
+  name         String        @unique
+  levelOnes    LevelOne[]
+  levelTwos    LevelTwo[]
+  levelThrees  LevelThree[]
+  levelFours   LevelFour[]
+  transactions Transaction[]
+  isSuspended  Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model LevelOne {
+  id          String     @id @default(uuid())
+  nature      Nature
+  name        String
+  levelTwos   LevelTwo[]
+  account     Account    @relation(fields: [accountId], references: [id])
+  accountId   String
+  isSuspended Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model LevelTwo {
+  id          String       @id @default(uuid())
+  name        String
+  levelOne    LevelOne     @relation(fields: [levelOneId], references: [id])
+  levelOneId  String
+  levelThrees LevelThree[]
+  account     Account      @relation(fields: [accountId], references: [id])
+  accountId   String
+  isSuspended Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model LevelThree {
+  id          String      @id @default(uuid())
+  name        String
+  levelTwo    LevelTwo    @relation(fields: [levelTwoId], references: [id])
+  levelTwoId  String
+  levelFours  LevelFour[]
+  account     Account     @relation(fields: [accountId], references: [id])
+  accountId   String
+  isSuspended Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model LevelFour {
+  id           String        @id @default(uuid())
+  name         String
+  levelThree   LevelThree    @relation(fields: [levelThreeId], references: [id])
+  levelThreeId String
+  debits       Transaction[] @relation(name: "Debit")
+  credits      Transaction[] @relation(name: "Credit")
+  account      Account       @relation(fields: [accountId], references: [id])
+  accountId    String
+  isSuspended  Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum Nature {
+  ASSET
+  EXPENSE
+  LIABILITY
+  EQUITY
+  REVENUE
+}
+
+model Transaction {
+  id          String    @id @default(uuid())
+  debit       LevelFour @relation(name: "Debit", fields: [debitId], references: [id])
+  debitId     String
+  credit      LevelFour @relation(name: "Credit", fields: [creditId], references: [id])
+  creditId    String
+  amount      Float
+  description String
+  account     Account   @relation(fields: [accountId], references: [id])
+  accountId   String
+  isSuspended Boolean   @default(false)
+  logs        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

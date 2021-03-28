@@ -45,6 +45,6 @@ export const isContainSpaces = (str) => /\s/.test(str);
 export const checkExistence = async (tableRef, id, title, checkArchived) => {
 	const data = await prisma[tableRef].findUnique({ where: { id } });
 	if (!data) throw new ApolloError(`${title} not found...`);
-	if (checkArchived && data.isArchived) throw new ApolloError(`${title} is already deleted...`);
+	if (checkArchived && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
 	return data;
 };
