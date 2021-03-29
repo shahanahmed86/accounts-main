@@ -42,9 +42,16 @@ export const convertDateToISO = (date) => moment.utc(date).toISOString();
 
 export const isContainSpaces = (str) => /\s/.test(str);
 
-export const checkExistence = async (tableRef, id, title, checkArchived) => {
+export const checkExistence = async (tableRef, id, title, checkSuspension) => {
 	const data = await prisma[tableRef].findUnique({ where: { id } });
 	if (!data) throw new ApolloError(`${title} not found...`);
-	if (checkArchived && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
+	if (checkSuspension && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
 	return data;
+};
+
+export const checkDuplication = async (tableRef, entityKey, entityValue, title, id) => {
+	const where = { [entityKey]: entityValue };
+	if (id) where.NOT = { id };
+	const duplicate = await prisma[tableRef].findFirst({ where });
+	if (duplicate) throw new ApolloError(`${title} is already in use...`);
 };

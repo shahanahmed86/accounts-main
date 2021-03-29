@@ -11,7 +11,7 @@ export default gql`
 
 	type AuthAdminPayload {
 		token: String!
-		admin: Admin!
+		user: Admin!
 	}
 
 	extend type Query {

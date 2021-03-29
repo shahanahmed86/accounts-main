@@ -21,4 +21,18 @@ export default gql`
 	type Subscription {
 		_: Boolean
 	}
+
+	enum Nature {
+		ASSET
+		EXPENSE
+		LIABILITY
+		EQUITY
+		REVENUE
+	}
+
+	type Status {
+		success: Boolean!
+		message: String!
+		debugMessage: String
+	}
 `;
