@@ -1,2 +1,1 @@
-// need to add all relations if any...
-export {}
+export { default as Admin } from './admin';
