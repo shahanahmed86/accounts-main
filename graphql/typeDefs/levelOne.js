@@ -19,7 +19,7 @@ export default gql`
 
 	extend type Mutation {
 		createLevelOne(nature: Nature!, name: String!): Status! @auth(shouldAccount: true)
-		updateLevelOne(id: String!, nature: Nature, name: String, isSuspended: Boolean): Status! @auth(shouldAccount: true)
+		updateLevelOne(id: String!, nature: Nature, name: String, isSuspended: Boolean): Status! @auth(shouldAccount: true, shouldAdmin: true)
 		deleteLevelOne(id: String!): Status! @auth(shouldAccount: true)
 	}
 `;

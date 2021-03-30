@@ -40,8 +40,6 @@ export const isColorCodeValid = (color) => /[0-9A-Fa-f]{6}/g.test(color);
 
 export const convertDateToISO = (date) => moment.utc(date).toISOString();
 
-export const isContainSpaces = (str) => /\s/.test(str);
-
 export const checkExistence = async (tableRef, id, title, checkSuspension) => {
 	const data = await prisma[tableRef].findUnique({ where: { id } });
 	if (!data) throw new ApolloError(`${title} not found...`);

@@ -1,6 +1,6 @@
-import { AuthenticationError, SchemaDirectiveVisitor } from 'apollo-server-express';
+import { SchemaDirectiveVisitor } from 'apollo-server-express';
 import { defaultFieldResolver } from 'graphql';
-import { checkExistence, getDecodedToken } from '../../utils';
+import { middleware } from '../../controller';
 
 class AuthDirective extends SchemaDirectiveVisitor {
 	visitFieldDefinition(field) {
@@ -10,24 +10,7 @@ class AuthDirective extends SchemaDirectiveVisitor {
 		field.resolve = async function (...args) {
 			const [, , context] = args;
 
-			const decoded = getDecodedToken(context.req, doNotThrow);
-			if (decoded) {
-				if (shouldAdmin && 'adminId' in decoded) {
-					const admin = await checkExistence('admin', decoded.adminId, 'Admin');
-					context.req.user = {
-						...admin,
-						userType: 'admin'
-					};
-				} else if (shouldAccount && 'accountId' in decoded) {
-					const account = await checkExistence('account', decoded.accountId, 'Account', true);
-					context.req.user = {
-						...account,
-						userType: 'account'
-					};
-				} else {
-					throw new AuthenticationError("You aren't authorize for such actions...");
-				}
-			}
+			await middleware.checkAuth(false, { shouldAccount, shouldAdmin, doNotThrow }, context);
 
 			return resolve.apply(this, args);
 		};

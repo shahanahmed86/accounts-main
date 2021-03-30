@@ -1,5 +1,6 @@
-import { ApolloError, SchemaDirectiveVisitor } from 'apollo-server-express';
+import { SchemaDirectiveVisitor } from 'apollo-server-express';
 import { defaultFieldResolver } from 'graphql';
+import { checkGuest } from '../../controller/middleware';
 
 class GuestDirective extends SchemaDirectiveVisitor {
 	visitFieldDefinition(field) {
@@ -8,9 +9,7 @@ class GuestDirective extends SchemaDirectiveVisitor {
 		field.resolve = function (...args) {
 			const [, , context] = args;
 
-			if (context.req.headers['authorization']) {
-				throw new ApolloError('You have an active login session...');
-			}
+			checkGuest(false, false, context);
 
 			return resolve.apply(this, args);
 		};

@@ -1,9 +1,10 @@
+import Joi from 'joi';
 import { hashSync } from 'bcryptjs';
 import { BCRYPT_SALT } from '../../config';
-import { checkDuplication, isContainSpaces, prisma, saveFile } from '../../utils';
+import { checkDuplication, prisma, saveFile, validation } from '../../utils';
 
 export default async (parent, { password, avatar, ...data }, context, info) => {
-	isContainSpaces(data.username);
+	await Joi.validate({ ...data, password }, validation.accountObject, { abortEarly: false });
 
 	await checkDuplication('account', 'username', data.username, 'Username');
 

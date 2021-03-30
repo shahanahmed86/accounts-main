@@ -3,7 +3,6 @@ import { Router } from 'express';
 
 const router = Router();
 
-//downloading files
 router.get(`/files/:filename`, (req, res) => {
 	const file = `./uploads/${req.params.filename}`;
 	if (existsSync(file)) return res.download(file);

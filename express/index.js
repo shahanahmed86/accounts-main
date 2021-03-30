@@ -5,7 +5,7 @@ import cors from 'cors';
 import path from 'path';
 
 // routes
-import { fileRoute } from './routes';
+import { fileRoute, userRoute } from './routes';
 
 const adminStatic = path.resolve(__dirname, 'admin');
 
@@ -24,6 +24,7 @@ app.use(morgan('dev'));
 
 // routes
 app.use(fileRoute);
+app.use(userRoute);
 
 // builds
 app.get('/admin', (req, res) => {
