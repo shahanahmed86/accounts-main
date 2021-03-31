@@ -1,7 +1,15 @@
 import { checkExistence, prisma } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
-	const levelOne = await checkExistence('levelOne', id, 'Record');
+	const { id: userId } = context.req.user;
+
+	const levelOne = await checkExistence({
+		tableRef: 'levelOne',
+		entityKey: 'id',
+		entityValue: id,
+		title: 'Record',
+		account: userId
+	});
 
 	if (levelOne.isSuspended) {
 		return {

@@ -4,7 +4,7 @@ export default (parent, args, { req, res, next }) => {
 	const isRest = typeof next === 'function';
 	try {
 		if (req.headers['authorization']) {
-			throw new ApolloError('You have an active login session...');
+			throw new AuthenticationError('You have an active login session...');
 		}
 		if (isRest) next();
 	} catch (error) {

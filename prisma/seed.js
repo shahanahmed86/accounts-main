@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const { PrismaClient } = require('@prisma/client');
-
 const prisma = new PrismaClient();
 
 function main() {
@@ -9,7 +8,7 @@ function main() {
 		update: {},
 		create: {
 			username: 'admin',
-			password: bcrypt.hashSync('admin', 10)
+			password: bcrypt.hashSync('123Abc456', 10)
 		}
 	});
 }

@@ -1,12 +1,11 @@
-import Joi from 'joi';
 import { hashSync } from 'bcryptjs';
 import { BCRYPT_SALT } from '../../config';
 import { checkDuplication, prisma, saveFile, validation } from '../../utils';
 
 export default async (parent, { password, avatar, ...data }, context, info) => {
-	await Joi.validate({ ...data, password }, validation.accountObject, { abortEarly: false });
+	await validation.accountSchema.validateAsync({ ...data, password }, { abortEarly: 'false' });
 
-	await checkDuplication('account', 'username', data.username, 'Username');
+	await checkDuplication({ tableRef: 'account', entityKey: 'username', entityValue: data.username, title: 'Username' });
 
 	data.password = hashSync(password, BCRYPT_SALT);
 

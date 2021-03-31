@@ -40,16 +40,27 @@ export const isColorCodeValid = (color) => /[0-9A-Fa-f]{6}/g.test(color);
 
 export const convertDateToISO = (date) => moment.utc(date).toISOString();
 
-export const checkExistence = async (tableRef, id, title, checkSuspension) => {
-	const data = await prisma[tableRef].findUnique({ where: { id } });
+export const checkExistence = async ({
+	tableRef,
+	entityKey,
+	entityValue,
+	title,
+	checkSuspension = false,
+	parentKey,
+	parentValue
+}) => {
+	const where = { [entityKey]: entityValue };
+	if (parentKey) where[parentKey] = { id: parentValue };
+	const data = await prisma[tableRef].findFirst({ where });
 	if (!data) throw new ApolloError(`${title} not found...`);
 	if (checkSuspension && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
 	return data;
 };
 
-export const checkDuplication = async (tableRef, entityKey, entityValue, title, id) => {
+export const checkDuplication = async ({ tableRef, entityKey, entityValue, title, id, parentKey, parentValue }) => {
 	const where = { [entityKey]: entityValue };
 	if (id) where.NOT = { id };
+	if (parentKey) where[parentKey] = { id: parentValue };
 	const duplicate = await prisma[tableRef].findFirst({ where });
 	if (duplicate) throw new ApolloError(`${title} is already in use...`);
 };

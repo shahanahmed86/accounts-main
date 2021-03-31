@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-export const usernameSchema = Joi.string().alphanum().min(3).max(30).required().label('Username');
+export const usernameSchema = Joi.string().min(4).max(30).required().label('Username');
 
 export const passwordSchema = Joi.string()
 	.min(8)
@@ -17,8 +17,8 @@ export const nameSchema = Joi.string().max(254).required().label('Name');
 
 export const natureSchema = Joi.string().uppercase().max(10).required().label('Nature');
 
-export const signInObject = Joi.object().keys({ username: usernameSchema, password: passwordSchema });
+export const signInSchema = Joi.object().keys({ username: usernameSchema, password: passwordSchema });
 
-export const accountObject = Joi.object().keys({ username: usernameSchema, password: passwordSchema, name: nameSchema });
+export const accountSchema = Joi.object().keys({ username: usernameSchema, password: passwordSchema, name: nameSchema });
 
-export const levelObject = Joi.object().keys({ name: nameSchema, nature: natureSchema });
+export const levelSchema = Joi.object().keys({ name: nameSchema, nature: natureSchema });

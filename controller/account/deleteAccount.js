@@ -1,7 +1,7 @@
 import { checkExistence, prisma } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
-	const account = await checkExistence('account', id, 'Account');
+	const account = await checkExistence({ tableRef: 'account', entityKey: 'id', entityValue: id, title: 'Account' });
 
 	if (account.isSuspended) {
 		return {

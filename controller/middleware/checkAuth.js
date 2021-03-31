@@ -4,17 +4,28 @@ import { checkExistence, getDecodedToken } from '../../utils';
 export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req, res, next }) => {
 	const isRest = typeof next === 'function';
 	try {
-		const decoded = getDecodedToken(context.req, doNotThrow);
+		const decoded = getDecodedToken(req, doNotThrow);
 		if (decoded) {
 			if (shouldAdmin && 'adminId' in decoded) {
-				const admin = await checkExistence('admin', decoded.adminId, 'Admin');
-				context.req.user = {
+				const admin = await checkExistence({
+					tableRef: 'admin',
+					entityKey: 'id',
+					entityValue: decoded.adminId,
+					title: 'Admin'
+				});
+				req.user = {
 					...admin,
 					userType: 'admin'
 				};
 			} else if (shouldAccount && 'accountId' in decoded) {
-				const account = await checkExistence('account', decoded.accountId, 'Account', true);
-				context.req.user = {
+				const account = await checkExistence({
+					tableRef: 'account',
+					entityKey: 'id',
+					entityValue: decoded.accountId,
+					title: 'Account',
+					checkSuspension: true
+				});
+				req.user = {
 					...account,
 					userType: 'account'
 				};

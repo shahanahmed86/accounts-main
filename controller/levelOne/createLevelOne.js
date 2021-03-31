@@ -1,20 +1,20 @@
-import Joi from 'joi';
 import { checkDuplication, prisma, validation } from '../../utils';
 
 export default async (parent, data, context, info) => {
-	await Joi.validate({ name: data.name, nature: data.nature }, validation.levelObject, { abortEarly: false });
+	await validation.levelSchema.validateAsync({ name: data.name, nature: data.nature }, { abortEarly: 'false' });
 
 	const { id: userId } = context.req.user;
 
-	await checkDuplication('levelOne', 'name', data.name, 'Name');
+	await checkDuplication({ tableRef: 'levelOne', entityKey: 'name', entityValue: data.name, title: 'Name' });
 
 	data.account = {
 		connect: { id: userId }
 	};
-	await prisma.levelOne.create({ data });
+	const createdLevel = await prisma.levelOne.create({ data });
 
 	return {
 		success: true,
-		message: `${data.name} created successfully...`
+		message: `${data.name} created successfully...`,
+		debugMessage: createdLevel.id
 	};
 };
