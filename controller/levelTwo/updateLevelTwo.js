@@ -4,31 +4,33 @@ import { checkDuplication, checkExistence, prisma, validation } from '../../util
 export default async (parent, { id, ...data }, context, info) => {
 	const { id: userId, userType } = context.req.user;
 
-	const levelOne = await checkExistence({ tableRef: 'levelOne', entityKey: 'id', entityValue: id, title: 'Account' });
-	levelOne.account = await prisma.levelOne.findUnique({ where: { id } }).account();
+	const levelTwo = await checkExistence({ tableRef: 'levelTwo', entityKey: 'id', entityValue: id, title: 'Account' });
+	levelTwo.account = await prisma.levelTwo.findUnique({ where: { id } }).account();
 
 	if (userType === 'account') {
 		if (data.isSuspended === true) {
 			throw new ApolloError('Only admin can restore the deleted account...');
 		}
-		if (levelOne.account.id !== userId) throw new ApolloError('Invalid account...');
+		if (levelTwo.account.id !== userId) throw new ApolloError('Invalid account...');
 	}
 
-	if (data.name && data.name !== levelOne.name) {
+	levelTwo.levelOne = await prisma.levelTwo.findUnique({ where: { id } }).levelOne();
+
+	if (data.name && data.name !== levelTwo.name) {
 		await validation.nameSchema.validateAsync(data.name);
 
 		await checkDuplication({
-			tableRef: 'levelOne',
+			tableRef: 'levelTwo',
 			entityKey: 'name',
 			entityValue: data.name,
 			title: data.name,
-			parentKey: 'account',
-			parentValue: levelOne.account.id,
+			parentKey: 'levelOne',
+			parentValue: levelTwo.levelOne.id,
 			id
 		});
 	}
 
-	await prisma.levelOne.update({ where: { id }, data });
+	await prisma.levelTwo.update({ where: { id }, data });
 
 	return {
 		success: true,

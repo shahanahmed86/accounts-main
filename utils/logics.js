@@ -62,5 +62,5 @@ export const checkDuplication = async ({ tableRef, entityKey, entityValue, title
 	if (id) where.NOT = { id };
 	if (parentKey) where[parentKey] = { id: parentValue };
 	const duplicate = await prisma[tableRef].findFirst({ where });
-	if (duplicate) throw new ApolloError(`${title} is already in use...`);
+	if (duplicate) throw new ApolloError(`${title} is already created...`);
 };

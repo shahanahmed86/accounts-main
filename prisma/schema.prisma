@@ -34,7 +34,7 @@ model Account {
 model LevelOne {
   id          String     @id @default(uuid())
   nature      Nature
-  name        String     @unique
+  name        String
   levelTwos   LevelTwo[]
   account     Account    @relation(fields: [accountId], references: [id])
   accountId   String
@@ -45,7 +45,7 @@ model LevelOne {
 
 model LevelTwo {
   id          String       @id @default(uuid())
-  name        String       @unique
+  name        String
   levelOne    LevelOne     @relation(fields: [levelOneId], references: [id])
   levelOneId  String
   levelThrees LevelThree[]
@@ -58,7 +58,7 @@ model LevelTwo {
 
 model LevelThree {
   id          String      @id @default(uuid())
-  name        String      @unique
+  name        String
   levelTwo    LevelTwo    @relation(fields: [levelTwoId], references: [id])
   levelTwoId  String
   levelFours  LevelFour[]
@@ -71,7 +71,7 @@ model LevelThree {
 
 model LevelFour {
   id           String        @id @default(uuid())
-  name         String        @unique
+  name         String
   levelThree   LevelThree    @relation(fields: [levelThreeId], references: [id])
   levelThreeId String
   debits       Transaction[] @relation(name: "Debit")

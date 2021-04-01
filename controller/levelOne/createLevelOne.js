@@ -5,7 +5,18 @@ export default async (parent, data, context, info) => {
 
 	const { id: userId } = context.req.user;
 
-	await checkDuplication({ tableRef: 'levelOne', entityKey: 'name', entityValue: data.name, title: 'Name' });
+	await Promise.all(
+		Object.keys(data).map((key) => {
+			return checkDuplication({
+				tableRef: 'levelOne',
+				entityKey: key,
+				entityValue: data[key],
+				title: data[key],
+				parentKey: 'account',
+				parentValue: userId
+			});
+		})
+	);
 
 	data.account = {
 		connect: { id: userId }

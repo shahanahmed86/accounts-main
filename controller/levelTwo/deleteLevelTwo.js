@@ -3,8 +3,8 @@ import { checkExistence, prisma } from '../../utils';
 export default async (parent, { id }, context, info) => {
 	const { id: userId } = context.req.user;
 
-	const levelOne = await checkExistence({
-		tableRef: 'levelOne',
+	const levelTwo = await checkExistence({
+		tableRef: 'levelTwo',
 		entityKey: 'id',
 		entityValue: id,
 		title: 'Account',
@@ -12,13 +12,14 @@ export default async (parent, { id }, context, info) => {
 		parentValue: userId
 	});
 
-	if (levelOne.isSuspended) {
+	if (levelTwo.isSuspended) {
 		return {
 			success: true,
 			message: 'Account is already been deleted...'
 		};
 	}
-	await prisma.levelOne.update({ where: { id }, data: { isSuspended: true } });
+
+	await prisma.levelTwo.update({ where: { id }, data: { isSuspended: true } });
 
 	return {
 		success: true,
