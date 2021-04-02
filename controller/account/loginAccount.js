@@ -1,7 +1,7 @@
 import { compareSync } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AuthenticationError } from 'apollo-server-errors';
-import { checkExistence, prisma, validation } from '../../utils';
+import { checkData, prisma, validation } from '../../utils';
 import { JWT_SECRET } from '../../config';
 
 export default async (parent, { username, password }) => {
@@ -10,12 +10,12 @@ export default async (parent, { username, password }) => {
 	const user = await prisma.account.findUnique({ where: { username } });
 	if (!user) throw new AuthenticationError(`User not found...`);
 
-	await checkExistence({
+	await checkData({
 		tableRef: 'account',
-		entityKey: 'id',
-		entityValue: user.id,
+		key: 'id',
+		value: user.id,
 		title: 'Account',
-		checkSuspension: true
+		isSuspended: true
 	});
 
 	if (!compareSync(password, user.password)) throw new AuthenticationError('Password mismatched...');

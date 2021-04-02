@@ -1,21 +1,21 @@
 import { ApolloError } from 'apollo-server-errors';
-import { checkExistence, prisma } from '../../utils';
+import { checkData, prisma } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
 	const { id: userId, userType } = context.req.user;
 	switch (userType) {
 		case 'admin': {
-			return checkExistence({ tableRef: 'levelTwo', entityKey: 'id', entityValue: id, title: 'Account' });
+			return checkData({ tableRef: 'levelTwo', key: 'id', value: id, title: 'Account' });
 		}
 		case 'account': {
-			return checkExistence({
+			return checkData({
 				tableRef: 'levelOne',
-				entityKey: 'id',
-				entityValue: id,
+				key: 'id',
+				value: id,
 				title: 'Account',
-				parentKey: 'account',
-				parentValue: userId,
-				checkSuspension: true
+				pKey: 'account',
+				pValue: userId,
+				isSuspended: true
 			});
 		}
 		default: {

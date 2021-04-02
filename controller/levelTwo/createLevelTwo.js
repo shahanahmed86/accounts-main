@@ -1,27 +1,28 @@
-import { checkDuplication, checkExistence, prisma, validation } from '../../utils';
+import { checkData, prisma, validation } from '../../utils';
 
 export default async (parent, data, context, info) => {
 	await validation.nameSchema.validateAsync(data.name);
 
 	const { id: userId } = context.req.user;
 
-	await checkExistence({
+	await checkData({
 		tableRef: 'levelTwo',
-		entityKey: 'levelOne',
-		entityValue: data.levelOneId,
+		key: 'levelOne',
+		value: data.levelOneId,
 		title: 'Account',
-		parentKey: 'account',
-		parentValue: userId,
-		checkSuspension: true
+		pKey: 'account',
+		pValue: userId,
+		isSuspended: true
 	});
 
-	await checkDuplication({
+	await checkData({
 		tableRef: 'levelTwo',
-		entityKey: 'name',
-		entityValue: data.name,
+		key: 'name',
+		value: data.name,
 		title: data.name,
-		parentKey: 'levelOneId',
-		parentValue: data.levelOneId
+		pKey: 'levelOneId',
+		pValue: data.levelOneId,
+		isDuplicated: true
 	});
 
 	data.account = {

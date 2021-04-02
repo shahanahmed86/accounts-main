@@ -1,4 +1,4 @@
-import { checkDuplication, prisma, validation } from '../../utils';
+import { checkData, prisma, validation } from '../../utils';
 
 export default async (parent, data, context, info) => {
 	await validation.levelSchema.validateAsync({ name: data.name, nature: data.nature }, { abortEarly: 'false' });
@@ -7,13 +7,13 @@ export default async (parent, data, context, info) => {
 
 	await Promise.all(
 		Object.keys(data).map((key) => {
-			return checkDuplication({
-				tableRef: 'levelOne',
-				entityKey: key,
-				entityValue: data[key],
+			return checkData({
+				key: 'levelOne',
+				key: key,
+				value: data[key],
 				title: data[key],
-				parentKey: 'account',
-				parentValue: userId
+				pKey: 'account',
+				pValue: userId
 			});
 		})
 	);

@@ -1,19 +1,27 @@
 import { hashSync, compareSync } from 'bcryptjs';
 import { BCRYPT_SALT } from '../../config';
-import { checkDuplication, checkExistence, prisma, saveFile, validation } from '../../utils';
+import { checkData, prisma, saveFile, validation } from '../../utils';
 
 export default async (parent, { id, password, avatar, ...data }, context, info) => {
-	const account = await checkExistence({ tableRef: 'account', entityKey: 'id', entityValue: id, title: 'Account' });
+	const account = await checkData({ tableRef: 'account', key: 'id', value: id, title: 'Account' });
 
-	if (data.username !== account.username) {
+	if (data.isSuspended === false && account.isSuspended === false) {
+		return {
+			success: false,
+			message: 'The account is already restored...'
+		};
+	}
+
+	if (data.username && data.username !== account.username) {
 		await validation.usernameSchema.validateAsync(data.username);
 
-		await checkDuplication({
+		await checkData({
 			tableRef: 'account',
-			entityKey: 'username',
-			entityValue: data.username,
-			title: 'Username',
-			id
+			key: 'username',
+			value: data.username,
+			title: data.username,
+			id,
+			isDuplicated: true
 		});
 	}
 

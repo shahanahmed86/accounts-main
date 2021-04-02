@@ -1,30 +1,28 @@
 import { ApolloError } from 'apollo-server-errors';
-import { checkDuplication, checkExistence, prisma, validation } from '../../utils';
+import { checkData, prisma, validation } from '../../utils';
 
 export default async (parent, { id, ...data }, context, info) => {
 	const { id: userId, userType } = context.req.user;
 
-	const levelOne = await checkExistence({ tableRef: 'levelOne', entityKey: 'id', entityValue: id, title: 'Account' });
+	const where = { tableRef: 'levelOne', key: 'id', value: id, title: 'Account' };
+	if (userType !== 'admin') where.isSuspended = false;
+	const levelOne = await checkData(where);
 	levelOne.account = await prisma.levelOne.findUnique({ where: { id } }).account();
 
-	if (userType === 'account') {
-		if (data.isSuspended === true) {
-			throw new ApolloError('Only admin can restore the deleted account...');
-		}
-		if (levelOne.account.id !== userId) throw new ApolloError('Invalid account...');
-	}
+	if (userType === 'account' && levelOne.account.id !== userId) throw new ApolloError('Invalid account...');
 
 	if (data.name && data.name !== levelOne.name) {
 		await validation.nameSchema.validateAsync(data.name);
 
-		await checkDuplication({
+		await checkData({
 			tableRef: 'levelOne',
-			entityKey: 'name',
-			entityValue: data.name,
+			key: 'name',
+			value: data.name,
 			title: data.name,
-			parentKey: 'account',
-			parentValue: levelOne.account.id,
-			id
+			pKey: 'account',
+			pValue: levelOne.account.id,
+			id,
+			isDuplicated: true
 		});
 	}
 
@@ -32,7 +30,7 @@ export default async (parent, { id, ...data }, context, info) => {
 
 	return {
 		success: true,
-		message: `${data.name} updated successfully...`,
+		message: `${levelOne.name} updated successfully...`,
 		debugMessage: id
 	};
 };

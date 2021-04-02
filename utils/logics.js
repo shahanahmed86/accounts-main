@@ -40,27 +40,15 @@ export const isColorCodeValid = (color) => /[0-9A-Fa-f]{6}/g.test(color);
 
 export const convertDateToISO = (date) => moment.utc(date).toISOString();
 
-export const checkExistence = async ({
-	tableRef,
-	entityKey,
-	entityValue,
-	title,
-	checkSuspension = false,
-	parentKey,
-	parentValue
-}) => {
-	const where = { [entityKey]: entityValue };
-	if (parentKey) where[parentKey] = { id: parentValue };
-	const data = await prisma[tableRef].findFirst({ where });
-	if (!data) throw new ApolloError(`${title} not found...`);
-	if (checkSuspension && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
-	return data;
-};
-
-export const checkDuplication = async ({ tableRef, entityKey, entityValue, title, id, parentKey, parentValue }) => {
-	const where = { [entityKey]: entityValue };
+export const checkData = async ({ tableRef, key, value, pKey, pValue, title, id, isDuplicated, isSuspended }) => {
+	const where = { [key]: value };
+	if (pKey) where[pKey] = { id: pValue };
 	if (id) where.NOT = { id };
-	if (parentKey) where[parentKey] = { id: parentValue };
-	const duplicate = await prisma[tableRef].findFirst({ where });
-	if (duplicate) throw new ApolloError(`${title} is already created...`);
+	const data = await prisma[tableRef].findFirst({ where });
+	if (isDuplicated && data) throw new ApolloError(`${title} is already created...`);
+	else {
+		if (!data) throw new ApolloError(`${title} not found...`);
+		if (isSuspended && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
+	}
+	return data;
 };

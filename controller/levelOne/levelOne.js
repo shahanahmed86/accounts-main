@@ -1,5 +1,5 @@
-import { checkExistence, prisma } from '../../utils';
+import { checkData, prisma } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
-	return checkExistence('levelOne', id, 'Record');
+	return checkData({ tableRef: 'levelOne', id, title: 'Account' });
 };

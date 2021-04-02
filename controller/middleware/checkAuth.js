@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-errors';
-import { checkExistence, getDecodedToken } from '../../utils';
+import { checkData, getDecodedToken } from '../../utils';
 
 export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req, res, next }) => {
 	const isRest = typeof next === 'function';
@@ -7,10 +7,10 @@ export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req,
 		const decoded = getDecodedToken(req, doNotThrow);
 		if (decoded) {
 			if (shouldAdmin && 'adminId' in decoded) {
-				const admin = await checkExistence({
+				const admin = await checkData({
 					tableRef: 'admin',
-					entityKey: 'id',
-					entityValue: decoded.adminId,
+					key: 'id',
+					value: decoded.adminId,
 					title: 'Admin'
 				});
 				req.user = {
@@ -18,12 +18,12 @@ export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req,
 					userType: 'admin'
 				};
 			} else if (shouldAccount && 'accountId' in decoded) {
-				const account = await checkExistence({
+				const account = await checkData({
 					tableRef: 'account',
-					entityKey: 'id',
-					entityValue: decoded.accountId,
+					key: 'id',
+					value: decoded.accountId,
 					title: 'Account',
-					checkSuspension: true
+					isSuspended: true
 				});
 				req.user = {
 					...account,

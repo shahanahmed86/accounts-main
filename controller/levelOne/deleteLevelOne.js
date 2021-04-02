@@ -1,15 +1,15 @@
-import { checkExistence, prisma } from '../../utils';
+import { checkData, prisma } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
 	const { id: userId } = context.req.user;
 
-	const levelOne = await checkExistence({
+	const levelOne = await checkData({
 		tableRef: 'levelOne',
-		entityKey: 'id',
-		entityValue: id,
+		key: 'id',
+		value: id,
 		title: 'Account',
-		parentKey: 'account',
-		parentValue: userId
+		pKey: 'account',
+		pValue: userId
 	});
 
 	if (levelOne.isSuspended) {
@@ -22,6 +22,6 @@ export default async (parent, { id }, context, info) => {
 
 	return {
 		success: true,
-		message: `${data.name} updated successfully...`
+		message: `${levelOne.name} updated successfully...`
 	};
 };
