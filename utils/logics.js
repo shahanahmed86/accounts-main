@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-errors';
+import { ApolloError } from 'apollo-server-express';
 import { existsSync, mkdirSync, unlinkSync, createWriteStream } from 'fs';
 import moment from 'moment';
 import path from 'path';
@@ -40,7 +40,17 @@ export const isColorCodeValid = (color) => /[0-9A-Fa-f]{6}/g.test(color);
 
 export const convertDateToISO = (date) => moment.utc(date).toISOString();
 
-export const checkData = async ({ tableRef, key, value, pKey, pValue, title, id, isDuplicated, isSuspended }) => {
+export const checkData = async ({
+	tableRef,
+	key,
+	value,
+	pKey,
+	pValue,
+	title,
+	id,
+	isDuplicated,
+	isSuspended
+}) => {
 	const where = { [key]: value };
 	if (pKey) where[pKey] = { id: pValue };
 	if (id) where.NOT = { id };

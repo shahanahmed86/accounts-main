@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server-errors';
+import { AuthenticationError } from 'apollo-server-express';
 import { checkData, getDecodedToken } from '../../utils';
 
 export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req, res, next }) => {

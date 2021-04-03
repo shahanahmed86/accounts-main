@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server-errors';
+import { AuthenticationError } from 'apollo-server-express';
 import jwt from 'jsonwebtoken';
 
 import { JWT_SECRET } from '../config';

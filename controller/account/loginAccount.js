@@ -1,6 +1,6 @@
 import { compareSync } from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { AuthenticationError } from 'apollo-server-errors';
+import { AuthenticationError } from 'apollo-server-express';
 import { checkData, prisma, validation } from '../../utils';
 import { JWT_SECRET } from '../../config';
 
@@ -18,7 +18,8 @@ export default async (parent, { username, password }) => {
 		isSuspended: true
 	});
 
-	if (!compareSync(password, user.password)) throw new AuthenticationError('Password mismatched...');
+	if (!compareSync(password, user.password))
+		throw new AuthenticationError('Password mismatched...');
 
 	return {
 		token: jwt.sign({ accountId: user.id }, JWT_SECRET),

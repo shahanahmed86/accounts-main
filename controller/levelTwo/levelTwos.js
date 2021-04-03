@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-errors';
+import { ApolloError } from 'apollo-server-express';
 import { prisma } from '../../utils';
 
 export default (parent, args, context, info) => {

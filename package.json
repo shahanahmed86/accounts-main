@@ -18,11 +18,12 @@
 		"morgan": "^1.10.0"
 	},
 	"devDependencies": {
-		"nodemon": "^2.0.7",
-		"prisma": "^2.19.0",
 		"cross-env": "^7.0.3",
+		"depcheck": "^1.4.0",
 		"dotenv": "^8.2.0",
-		"esm": "^3.2.25"
+		"esm": "^3.2.25",
+		"nodemon": "^2.0.7",
+		"prisma": "^2.19.0"
 	},
 	"scripts": {
 		"dev": "cross-env NODE_ENV=development nodemon -r esm .",
@@ -31,6 +32,7 @@
 		"down": "docker-compose down",
 		"down:hard": "docker-compose down -v",
 		"stop": "docker-compose stop",
+		"deepcheck": "depcheck",
 		"prisma:format": "prisma format",
 		"prisma:deploy": "prisma migrate dev --name dev",
 		"prisma:seed": "prisma db seed --preview-feature"

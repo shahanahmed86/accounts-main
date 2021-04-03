@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-errors';
+import { ApolloError } from 'apollo-server-express';
 import { checkData, prisma, validation } from '../../utils';
 
 export default async (parent, { id, ...data }, context, info) => {
@@ -9,7 +9,8 @@ export default async (parent, { id, ...data }, context, info) => {
 	const levelOne = await checkData(where);
 	levelOne.account = await prisma.levelOne.findUnique({ where: { id } }).account();
 
-	if (userType === 'account' && levelOne.account.id !== userId) throw new ApolloError('Invalid account...');
+	if (userType === 'account' && levelOne.account.id !== userId)
+		throw new ApolloError('Invalid account...');
 
 	if (data.name && data.name !== levelOne.name) {
 		await validation.nameSchema.validateAsync(data.name);

@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server-errors';
+import { AuthenticationError } from 'apollo-server-express';
 
 export default (parent, args, { req, res, next }) => {
 	const isRest = typeof next === 'function';

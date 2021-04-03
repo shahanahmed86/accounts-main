@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-errors';
+import { ApolloError } from 'apollo-server-express';
 import { checkData, prisma } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
