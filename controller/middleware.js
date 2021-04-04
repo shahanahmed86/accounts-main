@@ -1,7 +1,7 @@
 import { AuthenticationError } from 'apollo-server-express';
-import { checkData, getDecodedToken } from '../../utils';
+import { checkData, getDecodedToken } from '../utils';
 
-export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req, res, next }) => {
+export const checkAuth = async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req, res, next }) => {
 	const isRest = typeof next === 'function';
 	try {
 		const decoded = getDecodedToken(req, doNotThrow);
@@ -23,7 +23,7 @@ export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req,
 					key: 'id',
 					value: decoded.accountId,
 					title: 'Account',
-					isSuspended: true
+					checkSuspension: true
 				});
 				req.user = {
 					...account,
@@ -36,6 +36,19 @@ export default async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req,
 		if (isRest) next();
 	} catch (error) {
 		if (isRest) return res.status(400).send(error.message);
-		throw new AuthenticationError(error);
+		throw new AuthenticationError(error.message);
+	}
+};
+
+export const checkGuest = (parent, args, { req, res, next }) => {
+	const isRest = typeof next === 'function';
+	try {
+		if (req.headers['authorization']) {
+			throw new AuthenticationError('You have an active login session...');
+		}
+		if (isRest) next();
+	} catch (error) {
+		if (isRest) return res.status(400).send(error.message);
+		throw new AuthenticationError(error.message);
 	}
 };

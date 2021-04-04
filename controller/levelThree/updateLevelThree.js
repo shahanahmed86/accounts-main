@@ -3,12 +3,12 @@ import { checkData, prisma, validation } from '../../utils';
 export default async (parent, { id, ...data }, context, info) => {
 	const { id: userId, userType } = context.req.user;
 
-	const where = { tableRef: 'levelOne', key: 'id', value: id, title: 'Account' };
+	const where = { tableRef: 'levelThree', key: 'id', value: id, title: 'Account' };
 	if (userType !== 'admin') {
 		where.pKey = userType;
 		where.pValue = userId;
 	}
-	const levelOne = await checkData(where);
+	const levelThree = await checkData(where);
 
 	if (data.isSuspended === false) {
 		if (userType !== 'admin') {
@@ -17,32 +17,32 @@ export default async (parent, { id, ...data }, context, info) => {
 				message: 'Only admin can restore such account...'
 			};
 		}
-		if (levelOne.isSuspended === false) {
+		if (levelThree.isSuspended === false) {
 			return {
 				success: false,
-				message: `${data.name || levelOne.name} is already restored...`
+				message: `${data.name || levelThree.name} is already restored...`
 			};
 		}
 	}
 
-	levelOne.account = await prisma.levelOne.findUnique({ where: { id } }).account();
+	levelThree.levelTwo = await prisma.levelThree.findUnique({ where: { id } }).levelTwo();
 
-	if (data.name && data.name !== levelOne.name) {
+	if (data.name && data.name !== levelThree.name) {
 		await validation.nameSchema.validateAsync(data.name);
 
 		await checkData({
-			tableRef: 'levelOne',
+			tableRef: 'levelThree',
 			key: 'name',
 			value: data.name,
 			title: data.name,
-			pKey: 'account',
-			pValue: levelOne.account.id,
+			pKey: 'levelTwo',
+			pValue: levelThree.levelTwo.id,
 			id,
 			checkDuplication: true
 		});
 	}
 
-	const updatedLevel = await prisma.levelOne.update({ where: { id }, data });
+	const updatedLevel = await prisma.levelThree.update({ where: { id }, data });
 
 	return {
 		success: true,

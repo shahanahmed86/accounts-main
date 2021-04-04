@@ -1,33 +1,22 @@
-import { prisma } from '../../../utils';
+import { filterRelationData } from '../../../utils';
 
 export default {
 	async password() {
 		return null;
 	},
-	async levelOnes(root, _, context) {
-		console.log(context.req.user.userType);
-		const where = {};
-		if (context.req.user.userType !== 'admin') where.isSuspended = false;
-		return prisma.account.findUnique({ where: { id: root.id } }).levelOnes({ where });
+	async levelOnes({ id }, _, { req }) {
+		return filterRelationData({ req, tableRef: 'account', id, ref: 'levelOnes' });
 	},
-	async levelTwos(root, _, context) {
-		const where = {};
-		if (context.req.user.userType !== 'admin') where.isSuspended = false;
-		return prisma.account.findUnique({ where: { id: root.id } }).levelTwos({ where });
+	async levelTwos({ id }, _, { req }) {
+		return filterRelationData({ req, tableRef: 'account', id, ref: 'levelTwos' });
 	},
-	async levelThrees(root, _, context) {
-		const where = {};
-		if (context.req.user.userType !== 'admin') where.isSuspended = false;
-		return prisma.account.findUnique({ where: { id: root.id } }).levelThrees({ where });
+	async levelThrees({ id }, _, { req }) {
+		return filterRelationData({ req, tableRef: 'account', id, ref: 'levelThrees' });
 	},
-	async levelFours(root, _, context) {
-		const where = {};
-		if (context.req.user.userType !== 'admin') where.isSuspended = false;
-		return prisma.account.findUnique({ where: { id: root.id } }).levelFours({ where });
+	async levelFours({ id }, _, { req }) {
+		return filterRelationData({ req, tableRef: 'account', id, ref: 'levelFours' });
 	},
-	async transactions(root, _, context) {
-		const where = {};
-		if (context.req.user.userType !== 'admin') where.isSuspended = false;
-		return prisma.account.findUnique({ where: { id: root.id } }).transactions({ where });
+	async transactions({ id }, _, { req }) {
+		return filterRelationData({ req, tableRef: 'account', id, ref: 'transactions' });
 	}
 };

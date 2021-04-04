@@ -5,8 +5,8 @@ export default gql`
 		id: String!
 		nature: Nature!
 		name: String!
-		levelTwos: [LevelTwo!]
-		account: Account!
+		levelTwos: [LevelTwo!] @auth(shouldAccount: true, shouldAdmin: true)
+		account: Account! @auth(shouldAccount: true, shouldAdmin: true)
 		isSuspended: Boolean!
 		createdAt: Date!
 		updatedAt: Date!

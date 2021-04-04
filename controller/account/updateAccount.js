@@ -21,7 +21,7 @@ export default async (parent, { id, password, avatar, ...data }, context, info) 
 			value: data.username,
 			title: data.username,
 			id,
-			isDuplicated: true
+			checkDuplication: true
 		});
 	}
 
@@ -41,6 +41,7 @@ export default async (parent, { id, password, avatar, ...data }, context, info) 
 
 	return {
 		success: true,
-		message: 'Account updated successfully...'
+		message: 'Account updated successfully...',
+		debugMessage: id
 	};
 };

@@ -1,5 +1,5 @@
 import { ApolloError } from 'apollo-server-express';
-import { checkData, prisma } from '../../utils';
+import { checkData } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
 	const { id: userId, userType } = context.req.user;
@@ -9,13 +9,13 @@ export default async (parent, { id }, context, info) => {
 		}
 		case 'account': {
 			return checkData({
-				tableRef: 'levelOne',
+				tableRef: 'levelTwo',
 				key: 'id',
 				value: id,
 				title: 'Account',
-				pKey: 'account',
+				pKey: userType,
 				pValue: userId,
-				isSuspended: true
+				checkSuspension: true
 			});
 		}
 		default: {

@@ -1,17 +1,29 @@
-import { ApolloError } from 'apollo-server-express';
 import { checkData, prisma, validation } from '../../utils';
 
 export default async (parent, { id, ...data }, context, info) => {
 	const { id: userId, userType } = context.req.user;
 
 	const where = { tableRef: 'levelTwo', key: 'id', value: id, title: 'Account' };
-	if (userType !== 'admin') where.isSuspended = false;
-
+	if (userType !== 'admin') {
+		where.pKey = userType;
+		where.pValue = userId;
+	}
 	const levelTwo = await checkData(where);
-	levelTwo.account = await prisma.levelTwo.findUnique({ where: { id } }).account();
 
-	if (userType === 'account' && levelTwo.account.id !== userId)
-		throw new ApolloError('Invalid account...');
+	if (data.isSuspended === false) {
+		if (userType !== 'admin') {
+			return {
+				success: false,
+				message: 'Only admin can restore such account...'
+			};
+		}
+		if (levelTwo.isSuspended === false) {
+			return {
+				success: false,
+				message: `${data.name || levelTwo.name} is already restored...`
+			};
+		}
+	}
 
 	levelTwo.levelOne = await prisma.levelTwo.findUnique({ where: { id } }).levelOne();
 
@@ -26,15 +38,15 @@ export default async (parent, { id, ...data }, context, info) => {
 			pKey: 'levelOne',
 			pValue: levelTwo.levelOne.id,
 			id,
-			isDuplicated: true
+			checkDuplication: true
 		});
 	}
 
-	await prisma.levelTwo.update({ where: { id }, data });
+	const updatedLevel = await prisma.levelTwo.update({ where: { id }, data });
 
 	return {
 		success: true,
-		message: `${data.name} updated successfully...`,
+		message: `${data.name || updatedLevel.name} updated successfully...`,
 		debugMessage: id
 	};
 };

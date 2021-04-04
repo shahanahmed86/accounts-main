@@ -15,11 +15,10 @@ export default async (parent, { username, password }) => {
 		key: 'id',
 		value: user.id,
 		title: 'Account',
-		isSuspended: true
+		checkSuspension: true
 	});
 
-	if (!compareSync(password, user.password))
-		throw new AuthenticationError('Password mismatched...');
+	if (!compareSync(password, user.password)) throw new AuthenticationError('Password mismatched...');
 
 	return {
 		token: jwt.sign({ accountId: user.id }, JWT_SECRET),

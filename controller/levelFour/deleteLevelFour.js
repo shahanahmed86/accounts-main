@@ -3,8 +3,8 @@ import { checkData, prisma } from '../../utils';
 export default async (parent, { id }, context, info) => {
 	const { id: userId, userType } = context.req.user;
 
-	const levelTwo = await checkData({
-		tableRef: 'levelTwo',
+	const levelFour = await checkData({
+		tableRef: 'levelFour',
 		key: 'id',
 		value: id,
 		title: 'Account',
@@ -12,17 +12,17 @@ export default async (parent, { id }, context, info) => {
 		pValue: userId
 	});
 
-	if (levelTwo.isSuspended) {
+	if (levelFour.isSuspended) {
 		return {
 			success: true,
-			message: `${levelTwo.name} has already been deleted...`
+			message: `${levelFour.name} has already been deleted...`
 		};
 	}
-	await prisma.levelTwo.update({ where: { id }, data: { isSuspended: true } });
+	await prisma.levelFour.update({ where: { id }, data: { isSuspended: true } });
 
 	return {
 		success: true,
-		message: `${levelTwo.name} deleted successfully...`,
+		message: `${levelFour.name} deleted successfully...`,
 		debugMessage: id
 	};
 };

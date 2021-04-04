@@ -1,10 +1,10 @@
-import { prisma } from '../../../utils';
+import { checkData, filterRelationData } from '../../../utils';
 
 export default {
-	async levelTwos(root) {
-		return prisma.levelOne.findUnique({ where: { id: root.id } }).levelTwos();
+	async levelTwos({ id }, _, { req }) {
+		return filterRelationData({ req, tableRef: 'levelOne', id, ref: 'levelTwos' });
 	},
-	async account(root) {
-		return prisma.levelOne.findUnique({ where: { id: root.id } }).account();
+	async account({ id }, _, { req }) {
+		return filterRelationData({ req, tableRef: 'levelOne', id, ref: 'account', isRefSingle: true });
 	}
 };

@@ -3,17 +3,18 @@ import { checkData, prisma, validation } from '../../utils';
 export default async (parent, data, context, info) => {
 	await validation.levelSchema.validateAsync({ name: data.name, nature: data.nature }, { abortEarly: 'false' });
 
-	const { id: userId } = context.req.user;
+	const { id: userId, userType } = context.req.user;
 
 	await Promise.all(
 		Object.keys(data).map((key) => {
 			return checkData({
-				key: 'levelOne',
-				key: key,
+				tableRef: 'levelOne',
+				key,
 				value: data[key],
 				title: data[key],
-				pKey: 'account',
-				pValue: userId
+				pKey: userType,
+				pValue: userId,
+				checkDuplication: true
 			});
 		})
 	);

@@ -19,7 +19,7 @@ model Account {
   id           String        @id @default(uuid())
   username     String        @unique
   password     String
-  name         String        @unique
+  name         String
   avatar       String
   levelOnes    LevelOne[]
   levelTwos    LevelTwo[]
@@ -70,17 +70,17 @@ model LevelThree {
 }
 
 model LevelFour {
-  id           String        @id @default(uuid())
+  id           String     @id @default(uuid())
   name         String
-  levelThree   LevelThree    @relation(fields: [levelThreeId], references: [id])
+  levelThree   LevelThree @relation(fields: [levelThreeId], references: [id])
   levelThreeId String
-  debits       Transaction[] @relation(name: "Debit")
-  credits      Transaction[] @relation(name: "Credit")
-  account      Account       @relation(fields: [accountId], references: [id])
+  debits       Debit[]
+  credits      Credit[]
+  account      Account    @relation(fields: [accountId], references: [id])
   accountId    String
-  isSuspended  Boolean       @default(false)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  isSuspended  Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 enum Nature {
@@ -91,18 +91,38 @@ enum Nature {
   REVENUE
 }
 
+model Debit {
+  id            String      @id @default(uuid())
+  headId        String
+  head          LevelFour   @relation(fields: [headId], references: [id])
+  amount        Float
+  description   String
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Credit {
+  id            String      @id @default(uuid())
+  headId        String
+  head          LevelFour   @relation(fields: [headId], references: [id])
+  amount        Float
+  description   String
+  transactionId String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
 model Transaction {
-  id          String    @id @default(uuid())
-  debit       LevelFour @relation(name: "Debit", fields: [debitId], references: [id])
-  debitId     String
-  credit      LevelFour @relation(name: "Credit", fields: [creditId], references: [id])
-  creditId    String
-  amount      Float
-  description String
-  account     Account   @relation(fields: [accountId], references: [id])
+  id          String   @id @default(uuid())
+  debits      Debit[]
+  credits     Credit[]
   accountId   String
-  isSuspended Boolean   @default(false)
+  account     Account  @relation(fields: [accountId], references: [id])
+  isSuspended Boolean  @default(false)
   logs        String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

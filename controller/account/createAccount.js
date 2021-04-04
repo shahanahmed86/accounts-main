@@ -10,17 +10,18 @@ export default async (parent, { password, avatar, ...data }, context, info) => {
 		key: 'username',
 		value: data.username,
 		title: data.username,
-		isDuplicated: true
+		checkDuplication: true
 	});
 
 	data.password = hashSync(password, BCRYPT_SALT);
 
 	data.avatar = await saveFile(avatar);
 
-	await prisma.account.create({ data });
+	const createdAccount = await prisma.account.create({ data });
 
 	return {
 		success: true,
-		message: 'Account created successfully...'
+		message: 'Account created successfully...',
+		debugMessage: createdAccount.id
 	};
 };

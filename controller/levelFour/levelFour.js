@@ -5,11 +5,11 @@ export default async (parent, { id }, context, info) => {
 	const { id: userId, userType } = context.req.user;
 	switch (userType) {
 		case 'admin': {
-			return checkData({ tableRef: 'levelOne', key: 'id', value: id, title: 'Account' });
+			return checkData({ tableRef: 'levelFour', key: 'id', value: id, title: 'Account' });
 		}
 		case 'account': {
 			return checkData({
-				tableRef: 'levelOne',
+				tableRef: 'levelFour',
 				key: 'id',
 				value: id,
 				title: 'Account',

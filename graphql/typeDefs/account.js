@@ -7,11 +7,11 @@ export default gql`
 		password: String
 		name: String!
 		avatar: String!
-		levelOnes: [LevelOne!]
-		levelTwos: [LevelTwo!]
-		levelThrees: [LevelThree!]
-		levelFours: [LevelFour!]
-		transactions: [Transaction!]
+		levelOnes: [LevelOne!] @auth(shouldAccount: true, shouldAdmin: true)
+		levelTwos: [LevelTwo!] @auth(shouldAccount: true, shouldAdmin: true)
+		levelThrees: [LevelThree!] @auth(shouldAccount: true, shouldAdmin: true)
+		levelFours: [LevelFour!] @auth(shouldAccount: true, shouldAdmin: true)
+		transactions: [Transaction!] @auth(shouldAccount: true, shouldAdmin: true)
 		isSuspended: Boolean!
 		createdAt: Date!
 		updatedAt: Date!
@@ -29,8 +29,16 @@ export default gql`
 	}
 
 	extend type Mutation {
-		createAccount(username: String!, password: String!, name: String!, avatar: Upload!): Status! @auth(shouldAdmin: true)
-		updateAccount(id: String!, username: String, password: String, name: String, avatar: Upload, isSuspended: Boolean): Status! @auth(shouldAdmin: true)
+		createAccount(username: String!, password: String!, name: String!, avatar: Upload!): Status!
+			@auth(shouldAdmin: true)
+		updateAccount(
+			id: String!
+			username: String
+			password: String
+			name: String
+			avatar: Upload
+			isSuspended: Boolean
+		): Status! @auth(shouldAdmin: true)
 		deleteAccount(id: String!): Status! @auth(shouldAdmin: true)
 		loginAccount(username: String!, password: String!): AuthAccountPayload! @guest
 	}

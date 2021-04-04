@@ -1,31 +1,31 @@
 import { checkData, prisma, validation } from '../../utils';
 
-export default async (parent, { levelOneId, ...data }, context, info) => {
+export default async (parent, { levelTwoId, ...data }, context, info) => {
 	await validation.nameSchema.validateAsync(data.name);
 
 	const { id: userId, userType } = context.req.user;
 
 	await checkData({
-		tableRef: 'levelOne',
+		tableRef: 'levelTwo',
 		key: 'id',
-		value: levelOneId,
+		value: levelTwoId,
 		title: 'Account',
 		pKey: userType,
 		pValue: userId,
 		checkSuspension: true
 	});
 
-	data.levelOne = {
-		connect: { id: levelOneId }
+	data.levelTwo = {
+		connect: { id: levelTwoId }
 	};
 
 	await checkData({
-		tableRef: 'levelTwo',
+		tableRef: 'levelThree',
 		key: 'name',
 		value: data.name,
 		title: data.name,
-		pKey: 'levelOne',
-		pValue: levelOneId,
+		pKey: 'levelTwo',
+		pValue: levelTwoId,
 		checkDuplication: true
 	});
 
@@ -33,7 +33,7 @@ export default async (parent, { levelOneId, ...data }, context, info) => {
 		connect: { id: userId }
 	};
 
-	const createdLevel = await prisma.levelTwo.create({ data });
+	const createdLevel = await prisma.levelThree.create({ data });
 
 	return {
 		success: true,

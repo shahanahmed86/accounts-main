@@ -1,13 +1,31 @@
 import { gql } from 'apollo-server-express';
 
 export default gql`
-	type Transaction {
+	type Debit {
 		id: String!
-		debit: LevelFour!
-		credit: LevelFour!
+		head: LevelFour! @auth(shouldAccount: true, shouldAdmin: true)
 		amount: Float!
 		description: String!
-		account: Account!
+		transaction: Transaction! @auth(shouldAccount: true, shouldAdmin: true)
+		createdAt: Date!
+		updatedAt: Date!
+	}
+
+	type Credit {
+		id: String!
+		head: LevelFour! @auth(shouldAccount: true, shouldAdmin: true)
+		amount: Float!
+		description: String!
+		transaction: Transaction! @auth(shouldAccount: true, shouldAdmin: true)
+		createdAt: Date!
+		updatedAt: Date!
+	}
+
+	type Transaction {
+		id: String!
+		debits: [LevelFour!] @auth(shouldAccount: true, shouldAdmin: true)
+		credits: [LevelFour!] @auth(shouldAccount: true, shouldAdmin: true)
+		account: Account! @auth(shouldAccount: true, shouldAdmin: true)
 		isSuspended: Boolean!
 		logs: String!
 		createdAt: Date!
@@ -20,20 +38,20 @@ export default gql`
 	}
 
 	extend type Mutation {
-		createTransaction(
-			debitId: String!
-			creditId: String!
-			amount: Float!
-			description: String!
-		): Status! @auth(shouldAccount: true)
+		createTransaction(debitInputs: [EntryInput!]!, creditInputs: [EntryInput!]!): Status! @auth(shouldAccount: true)
 		updateTransaction(
 			id: String!
-			debitId: String
-			creditId: String
-			amount: Float
-			description: String
+			debitInputs: [EntryInput!]
+			creditInputs: [EntryInput!]
 			isSuspended: Boolean
-		): Status! @auth(shouldAccount: true)
+		): Status! @auth(shouldAccount: true, shouldAdmin: true)
 		deleteTransaction(id: String!): Status! @auth(shouldAccount: true)
+	}
+
+	input EntryInput {
+		id: String
+		headId: String!
+		amount: Float!
+		description: String!
 	}
 `;

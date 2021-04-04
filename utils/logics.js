@@ -48,17 +48,36 @@ export const checkData = async ({
 	pValue,
 	title,
 	id,
-	isDuplicated,
-	isSuspended
+	checkDuplication,
+	checkSuspension
 }) => {
 	const where = { [key]: value };
 	if (pKey) where[pKey] = { id: pValue };
 	if (id) where.NOT = { id };
 	const data = await prisma[tableRef].findFirst({ where });
-	if (isDuplicated && data) throw new ApolloError(`${title} is already created...`);
-	else {
+
+	if (checkDuplication && data) throw new ApolloError(`${title} is already created...`);
+
+	if (checkSuspension) {
 		if (!data) throw new ApolloError(`${title} not found...`);
-		if (isSuspended && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
+		if (checkSuspension && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
 	}
 	return data;
+};
+
+export const filterRelationData = async ({ req, tableRef, id, ref, isRefSingle = false }) => {
+	const { id: userId, userType } = req.user;
+	if (userType === 'account') {
+		const where = { id };
+		if (tableRef !== userType) where[userType] = { id: userId };
+		if (isRefSingle) {
+			const data = await prisma[tableRef].findFirst({ where })[ref]();
+			if (data.isSuspended === false) return data;
+			else throw new ApolloError(`${ref} parent table is deleted...`);
+		} else {
+			return prisma[tableRef].findFirst({ where })[ref]({ where: { isSuspended: false } });
+		}
+	} else {
+		return prisma[tableRef].findFirst({ where: { id } })[ref]();
+	}
 };
