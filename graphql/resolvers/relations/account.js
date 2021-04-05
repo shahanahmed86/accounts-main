@@ -18,5 +18,23 @@ export default {
 	},
 	async transactions({ id }, _, { req }) {
 		return filterRelationData({ req, tableRef: 'account', id, ref: 'transactions' });
+	},
+	async credits({ id }, _, { req }) {
+		return filterRelationData({
+			req,
+			tableRef: 'account',
+			id,
+			ref: 'credits',
+			checkSuspension: false
+		});
+	},
+	async debits({ id }, _, { req }) {
+		return filterRelationData({
+			req,
+			tableRef: 'account',
+			id,
+			ref: 'debits',
+			checkSuspension: false
+		});
 	}
 };

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Transaction" ALTER COLUMN "logs" DROP NOT NULL,
+ALTER COLUMN "logs" DROP DEFAULT;

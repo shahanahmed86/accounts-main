@@ -26,6 +26,8 @@ model Account {
   levelThrees  LevelThree[]
   levelFours   LevelFour[]
   transactions Transaction[]
+  debits       Debit[]
+  credits      Credit[]
   isSuspended  Boolean       @default(false)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -99,6 +101,8 @@ model Debit {
   description   String
   transactionId String
   transaction   Transaction @relation(fields: [transactionId], references: [id])
+  accountId     String
+  account       Account     @relation(fields: [accountId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -111,6 +115,8 @@ model Credit {
   description   String
   transactionId String
   transaction   Transaction @relation(fields: [transactionId], references: [id])
+  accountId     String
+  account       Account     @relation(fields: [accountId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -122,7 +128,7 @@ model Transaction {
   accountId   String
   account     Account  @relation(fields: [accountId], references: [id])
   isSuspended Boolean  @default(false)
-  logs        String
+  logs        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

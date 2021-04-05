@@ -5,8 +5,8 @@ export default gql`
 		id: String!
 		name: String!
 		levelThree: LevelThree! @auth(shouldAccount: true, shouldAdmin: true)
-		debits: [Transaction!] @auth(shouldAccount: true, shouldAdmin: true)
-		credits: [Transaction!] @auth(shouldAccount: true, shouldAdmin: true)
+		debits: [Debit!] @auth(shouldAccount: true, shouldAdmin: true)
+		credits: [Credit!] @auth(shouldAccount: true, shouldAdmin: true)
 		account: Account! @auth(shouldAccount: true, shouldAdmin: true)
 		isSuspended: Boolean!
 		createdAt: Date!
@@ -20,8 +20,12 @@ export default gql`
 
 	extend type Mutation {
 		createLevelFour(name: String!, levelThreeId: String!): Status! @auth(shouldAccount: true)
-		updateLevelFour(id: String!, name: String, levelThreeId: String!, isSuspended: Boolean): Status!
-			@auth(shouldAccount: true, shouldAdmin: true)
+		updateLevelFour(
+			id: String!
+			name: String
+			levelThreeId: String!
+			isSuspended: Boolean
+		): Status! @auth(shouldAccount: true, shouldAdmin: true)
 		deleteLevelFour(id: String!): Status! @auth(shouldAccount: true)
 	}
 `;

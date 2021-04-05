@@ -7,6 +7,7 @@ export default gql`
 		amount: Float!
 		description: String!
 		transaction: Transaction! @auth(shouldAccount: true, shouldAdmin: true)
+		account: Account! @auth(shouldAccount: true, shouldAdmin: true)
 		createdAt: Date!
 		updatedAt: Date!
 	}
@@ -17,14 +18,15 @@ export default gql`
 		amount: Float!
 		description: String!
 		transaction: Transaction! @auth(shouldAccount: true, shouldAdmin: true)
+		account: Account! @auth(shouldAccount: true, shouldAdmin: true)
 		createdAt: Date!
 		updatedAt: Date!
 	}
 
 	type Transaction {
 		id: String!
-		debits: [LevelFour!] @auth(shouldAccount: true, shouldAdmin: true)
-		credits: [LevelFour!] @auth(shouldAccount: true, shouldAdmin: true)
+		debits: [Debit!] @auth(shouldAccount: true, shouldAdmin: true)
+		credits: [Credit!] @auth(shouldAccount: true, shouldAdmin: true)
 		account: Account! @auth(shouldAccount: true, shouldAdmin: true)
 		isSuspended: Boolean!
 		logs: String!
@@ -38,7 +40,8 @@ export default gql`
 	}
 
 	extend type Mutation {
-		createTransaction(debitInputs: [EntryInput!]!, creditInputs: [EntryInput!]!): Status! @auth(shouldAccount: true)
+		createTransaction(debitInputs: [EntryInput!]!, creditInputs: [EntryInput!]!): Status!
+			@auth(shouldAccount: true)
 		updateTransaction(
 			id: String!
 			debitInputs: [EntryInput!]

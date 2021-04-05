@@ -4,3 +4,6 @@ export { default as LevelOne } from './levelOne';
 export { default as LevelTwo } from './levelTwo';
 export { default as LevelThree } from './levelThree';
 export { default as LevelFour } from './levelFour';
+export { default as Transaction } from './transaction';
+export { default as Debit } from './debit';
+export { default as Credit } from './credit';

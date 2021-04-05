@@ -12,6 +12,8 @@ export default gql`
 		levelThrees: [LevelThree!] @auth(shouldAccount: true, shouldAdmin: true)
 		levelFours: [LevelFour!] @auth(shouldAccount: true, shouldAdmin: true)
 		transactions: [Transaction!] @auth(shouldAccount: true, shouldAdmin: true)
+		debits: [Debit!] @auth(shouldAccount: true, shouldAdmin: true)
+		credits: [Credit!] @auth(shouldAccount: true, shouldAdmin: true)
 		isSuspended: Boolean!
 		createdAt: Date!
 		updatedAt: Date!

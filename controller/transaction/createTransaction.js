@@ -21,6 +21,7 @@ export default async (parent, { debitInputs, creditInputs, ...data }, context, i
 			.filter((input) => input.amount > 0)
 			.map(({ id, headId, ...input }) => ({
 				head: { connect: { id: headId } },
+				account: { connect: { id: userId } },
 				...input
 			}))
 	};
@@ -30,6 +31,7 @@ export default async (parent, { debitInputs, creditInputs, ...data }, context, i
 			.filter((input) => input.amount > 0)
 			.map(({ id, headId, ...input }) => ({
 				head: { connect: { id: headId } },
+				account: { connect: { id: userId } },
 				...input
 			}))
 	};

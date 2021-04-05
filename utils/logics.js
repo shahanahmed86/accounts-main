@@ -68,30 +68,41 @@ export const checkData = async ({
 	return data;
 };
 
-export const filterRelationData = async ({ req, tableRef, id, ref, isRefSingle = false }) => {
+export const filterRelationData = async ({
+	req,
+	tableRef,
+	id,
+	ref,
+	isRefSingle = false,
+	checkSuspension = true
+}) => {
 	const { id: userId, userType } = req.user;
+	const where = { id };
 	if (userType === 'account') {
-		const where = { id };
 		if (tableRef !== userType) where[userType] = { id: userId };
-		if (isRefSingle) {
-			const data = await prisma[tableRef].findFirst({ where })[ref]();
-			if (data.isSuspended === false) return data;
-			else throw new ApolloError(`${ref} parent table is deleted...`);
+		if (checkSuspension) {
+			if (isRefSingle) {
+				const data = await prisma[tableRef].findFirst({ where })[ref]();
+				if (data.isSuspended === false) return data;
+				else throw new ApolloError(`${ref} (parent) table is deleted...`);
+			} else {
+				return prisma[tableRef].findFirst({ where })[ref]({ where: { isSuspended: false } });
+			}
 		} else {
-			return prisma[tableRef].findFirst({ where })[ref]({ where: { isSuspended: false } });
+			return prisma[tableRef].findFirst({ where })[ref]();
 		}
 	} else {
-		return prisma[tableRef].findFirst({ where: { id } })[ref]();
+		return prisma[tableRef].findFirst({ where })[ref]();
 	}
 };
 
 export const checkDebitOrCreditRows = async (rows, pKey, pValue) => {
+	rows.map(({ headId }, i) => {
+		if (rows.some((input, j) => input.headId === headId && i !== j)) {
+			throw new ApolloError('Account(s) is/are duplicate...');
+		}
+	});
 	await Promise.all(
-		rows.map(({ headId }, i) => {
-			if (rows.some((input, j) => input.headId === headId && i !== j)) {
-				throw new ApolloError('Some accounts are duplicate...');
-			}
-		}),
 		rows.map(async ({ headId }) => {
 			await checkData({
 				tableRef: 'levelFour',
@@ -110,15 +121,22 @@ export const maintainLogs = async (id) => {
 	const transaction = await prisma.transaction.findUnique({
 		where: { id },
 		include: {
-			account: true,
 			credits: true,
 			debits: true
 		}
 	});
 
 	let logs = transaction.logs;
-	if (logs) logs.concat(JSON.stringify(transaction));
-	else logs = JSON.stringify(transaction);
+	delete transaction.logs;
+
+	if (logs) {
+		let data = JSON.parse(logs);
+		if (Array.isArray(data)) data.push(transaction);
+		else data = [data, transaction];
+		logs = JSON.stringify(data);
+	} else {
+		logs = JSON.stringify(transaction);
+	}
 
 	await prisma.transaction.update({
 		where: { id },

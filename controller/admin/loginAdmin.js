@@ -5,7 +5,7 @@ import { prisma, validation } from '../../utils';
 import { JWT_SECRET } from '../../config';
 
 export default async (parent, { username, password }) => {
-	await validation.signInSchema.validateAsync({ username, password }, { abortEarly: false });
+	await validation.usernameSchema.validateAsync(username);
 
 	const user = await prisma.admin.findUnique({ where: { username } });
 	if (!user) throw new AuthenticationError(`User not found...`);

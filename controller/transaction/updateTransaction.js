@@ -22,8 +22,8 @@ export default async (parent, { id, debitInputs, creditInputs, ...data }, contex
 	const creditTotal = creditInputs.reduce((acc, cur) => (acc += cur.amount), 0);
 	if (debitTotal !== creditTotal) throw new ApolloError('Footing is not matched...');
 
-	const createDebitInputs = debitInputs.filter(({ id }) => !id && amount > 0);
-	const updateDebitInputs = debitInputs.filter(({ id }) => id && amount > 0);
+	const createDebitInputs = debitInputs.filter(({ id, amount }) => !id && amount > 0);
+	const updateDebitInputs = debitInputs.filter(({ id, amount }) => id && amount > 0);
 	const deleteDebitInputs = debitInputs.filter(({ id, amount }) => id && amount <= 0);
 	data.debits = {
 		create: createDebitInputs.map(({ id, headId, ...input }) => ({
@@ -34,8 +34,8 @@ export default async (parent, { id, debitInputs, creditInputs, ...data }, contex
 		delete: deleteDebitInputs.map(({ id }) => ({ where: { id } }))
 	};
 
-	const createCreditInputs = creditInputs.filter(({ id }) => !id && amount > 0);
-	const updateCreditInputs = creditInputs.filter(({ id }) => id && amount > 0);
+	const createCreditInputs = creditInputs.filter(({ id, amount }) => !id && amount > 0);
+	const updateCreditInputs = creditInputs.filter(({ id, amount }) => id && amount > 0);
 	const deleteCreditInputs = creditInputs.filter(({ id, amount }) => id && amount <= 0);
 	data.credits = {
 		create: createCreditInputs.map(({ id, headId, ...input }) => ({
