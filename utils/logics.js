@@ -26,6 +26,8 @@ export const saveFile = (image, old) => {
 };
 
 export const emailValidator = async (email) => {
+	if (email.indexOf('@yahoo') !== -1) return;
+
 	const { valid, validators, reason } = await validate(email);
 	console.log(validators[reason]);
 	if (!valid) {
@@ -60,7 +62,8 @@ export const checkData = async ({
 
 	if (checkSuspension) {
 		if (!data) throw new ApolloError(`${title} not found...`);
-		if (checkSuspension && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
+		if (checkSuspension && data.isSuspended)
+			throw new ApolloError(`${title} is already deleted...`);
 	}
 	return data;
 };
@@ -80,4 +83,45 @@ export const filterRelationData = async ({ req, tableRef, id, ref, isRefSingle =
 	} else {
 		return prisma[tableRef].findFirst({ where: { id } })[ref]();
 	}
+};
+
+export const checkDebitOrCreditRows = async (rows, pKey, pValue) => {
+	await Promise.all(
+		rows.map(({ headId }, i) => {
+			if (rows.some((input, j) => input.headId === headId && i !== j)) {
+				throw new ApolloError('Some accounts are duplicate...');
+			}
+		}),
+		rows.map(async ({ headId }) => {
+			await checkData({
+				tableRef: 'levelFour',
+				key: 'id',
+				value: headId,
+				title: 'Account',
+				pKey,
+				pValue,
+				checkSuspension: true
+			});
+		})
+	);
+};
+
+export const maintainLogs = async (id) => {
+	const transaction = await prisma.transaction.findUnique({
+		where: { id },
+		include: {
+			account: true,
+			credits: true,
+			debits: true
+		}
+	});
+
+	let logs = transaction.logs;
+	if (logs) logs.concat(JSON.stringify(transaction));
+	else logs = JSON.stringify(transaction);
+
+	await prisma.transaction.update({
+		where: { id },
+		data: { logs }
+	});
 };

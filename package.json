@@ -32,7 +32,7 @@
 		"down": "docker-compose down",
 		"down:hard": "docker-compose down -v",
 		"stop": "docker-compose stop",
-		"deepcheck": "depcheck",
+		"deep-check": "depcheck --ignores esm",
 		"prisma:format": "prisma format",
 		"prisma:deploy": "prisma migrate dev --name dev",
 		"prisma:seed": "prisma db seed --preview-feature"
