@@ -1,7 +1,7 @@
 {
 	"name": "accounts",
 	"version": "1.0.0",
-	"description": "",
+	"description": "An Application for accounting",
 	"main": "index.js",
 	"dependencies": {
 		"@prisma/client": "^2.19.0",
@@ -43,8 +43,11 @@
 		"type": "git",
 		"url": "git+https://github.com/shahanahmed86/accounts.git"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [
+		"Accounts",
+		"Data Entry"
+	],
+	"author": "Shahan Ahmed Khan",
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/shahanahmed86/accounts/issues"
