@@ -1,4 +1,4 @@
-import { ApolloError } from 'apollo-server-errors';
+import { ApolloError } from 'apollo-server-express';
 import { checkDebitOrCreditRows, prisma, maintainLogs, checkData } from '../../utils';
 
 export default async (parent, { id, debitInputs, creditInputs, ...data }, context, info) => {

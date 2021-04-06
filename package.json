@@ -29,11 +29,13 @@
 		"dev": "cross-env NODE_ENV=development nodemon -r esm .",
 		"start": "cross-env NODE_ENV=production node -r esm .",
 		"up": "docker-compose up -d",
+		"postup": "npm run prisma:deploy; npm run dev",
 		"down": "docker-compose down",
 		"down:hard": "docker-compose down -v",
 		"stop": "docker-compose stop",
 		"deep-check": "depcheck --ignores esm",
 		"prisma:format": "prisma format",
+		"preprisma:deploy": "npm run prisma:format",
 		"prisma:deploy": "prisma migrate dev --name dev",
 		"prisma:seed": "prisma db seed --preview-feature"
 	},

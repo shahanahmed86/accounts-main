@@ -40,8 +40,7 @@ export default gql`
 	}
 
 	extend type Mutation {
-		createTransaction(debitInputs: [EntryInput!]!, creditInputs: [EntryInput!]!): Status!
-			@auth(shouldAccount: true)
+		createTransaction(debitInputs: [EntryInput!]!, creditInputs: [EntryInput!]!): Status! @auth(shouldAccount: true)
 		updateTransaction(
 			id: String!
 			debitInputs: [EntryInput!]

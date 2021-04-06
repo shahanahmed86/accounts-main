@@ -59,23 +59,14 @@ export const checkData = async ({
 	const data = await prisma[tableRef].findFirst({ where });
 
 	if (checkDuplication && data) throw new ApolloError(`${title} is already created...`);
+	if (!checkDuplication && !data) throw new ApolloError(`${title} not found...`);
 
-	if (checkSuspension) {
-		if (!data) throw new ApolloError(`${title} not found...`);
-		if (checkSuspension && data.isSuspended)
-			throw new ApolloError(`${title} is already deleted...`);
-	}
+	if (checkSuspension && data.isSuspended) throw new ApolloError(`${title} is already deleted...`);
+
 	return data;
 };
 
-export const filterRelationData = async ({
-	req,
-	tableRef,
-	id,
-	ref,
-	isRefSingle = false,
-	checkSuspension = true
-}) => {
+export const filterRelationData = async ({ req, tableRef, id, ref, isRefSingle = false, checkSuspension = true }) => {
 	const { id: userId, userType } = req.user;
 	const where = { id };
 	if (userType === 'account') {
@@ -135,7 +126,7 @@ export const maintainLogs = async (id) => {
 		else data = [data, transaction];
 		logs = JSON.stringify(data);
 	} else {
-		logs = JSON.stringify(transaction);
+		logs = JSON.stringify([transaction]);
 	}
 
 	await prisma.transaction.update({

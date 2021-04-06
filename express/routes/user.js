@@ -4,7 +4,7 @@ import { checkAuth } from '../middleware';
 
 const router = Router();
 
-router.get(`/userLoggedIn`, checkAuth, async (req, res) => {
+router.get(`/loggedIn`, checkAuth, async (req, res) => {
 	if (req.user.userType === 'admin') {
 		req.user.password = null;
 		return res.status(200).json(req.user);
