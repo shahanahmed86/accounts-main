@@ -2,6 +2,10 @@ import Joi from 'joi';
 
 export const usernameSchema = Joi.string().min(4).max(30).required().label('Username');
 
+export const emailSchema = Joi.string().email().required().label('Email');
+
+export const cellSchema = Joi.string().length(13).required().label('Cell');
+
 export const passwordSchema = Joi.string()
 	.min(8)
 	.max(50)
@@ -19,6 +23,12 @@ export const natureSchema = Joi.string().uppercase().max(10).required().label('N
 
 export const signInSchema = Joi.object().keys({ username: usernameSchema, password: passwordSchema });
 
-export const accountSchema = Joi.object().keys({ username: usernameSchema, password: passwordSchema, name: nameSchema });
+export const accountSchema = Joi.object().keys({
+	username: usernameSchema,
+	password: passwordSchema,
+	name: nameSchema,
+	email: emailSchema,
+	cell: cellSchema
+});
 
 export const levelSchema = Joi.object().keys({ name: nameSchema, nature: natureSchema });

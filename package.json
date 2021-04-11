@@ -29,7 +29,7 @@
 		"dev": "cross-env NODE_ENV=development nodemon -r esm .",
 		"start": "cross-env NODE_ENV=production node -r esm .",
 		"up": "docker-compose up -d",
-		"postup": "npm run prisma:deploy; npm run dev",
+		"postup": "npm run prisma:deploy; npm run prisma:seed; npm run dev",
 		"down": "docker-compose down",
 		"down:hard": "docker-compose down -v",
 		"stop": "docker-compose stop",

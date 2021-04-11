@@ -5,16 +5,20 @@ import { prisma, validation } from '../../utils';
 import { JWT_SECRET } from '../../config';
 
 export default async (parent, { username, password }) => {
-	await validation.usernameSchema.validateAsync(username);
+	try {
+		await validation.usernameSchema.validateAsync(username);
 
-	const user = await prisma.admin.findUnique({ where: { username } });
-	if (!user) throw new AuthenticationError(`User not found...`);
+		const user = await prisma.admin.findUnique({ where: { username } });
+		if (!user) throw new AuthenticationError(`User not found...`);
 
-	if (!compareSync(password, user.password))
-		throw new AuthenticationError('Password mismatched...');
+		if (!compareSync(password, user.password)) throw new AuthenticationError('Password mismatched...');
 
-	return {
-		token: jwt.sign({ adminId: user.id }, JWT_SECRET),
-		user
-	};
+		return {
+			token: jwt.sign({ adminId: user.id }, JWT_SECRET),
+			user
+		};
+	} catch (error) {
+		console.error(error);
+		throw new AuthenticationError(error.message);
+	}
 };

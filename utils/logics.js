@@ -26,7 +26,7 @@ export const saveFile = (image, old) => {
 };
 
 export const emailValidator = async (email) => {
-	if (email.indexOf('@yahoo') !== -1) return;
+	if (email.indexOf('@yahoo.com') !== -1) return;
 
 	const { valid, validators, reason } = await validate(email);
 	console.log(validators[reason]);

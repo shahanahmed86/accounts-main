@@ -19,6 +19,8 @@ model Account {
   id           String        @id @default(uuid())
   username     String        @unique
   password     String
+  email        String        @unique
+  cell         String        @unique
   name         String
   avatar       String
   levelOnes    LevelOne[]
