@@ -6,7 +6,7 @@ import { JWT_SECRET } from '../../config';
 
 export default async (parent, { username, password }) => {
 	try {
-		await validation.signInSchema.validateAsync({ username, password }, { abortEarly: 'false' });
+		await validation.usernameSchema.validateAsync(username);
 
 		const user = await prisma.account.findUnique({ where: { username } });
 		if (!user) throw new AuthenticationError(`User not found...`);

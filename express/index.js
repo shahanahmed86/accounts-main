@@ -23,8 +23,8 @@ app.use(cors());
 app.use(morgan('dev'));
 
 // routes
-app.use('file', fileRoute);
-app.use('auth', userRoute);
+app.use('/file', fileRoute);
+app.use('/auth', userRoute);
 
 // builds
 app.get('/admin', (req, res) => {

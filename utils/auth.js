@@ -9,8 +9,10 @@ export const getDecodedToken = (req, doNotThrow) => {
 		throw new AuthenticationError('Login session not found...');
 	}
 	if (authorization) {
+		console.log(authorization);
 		const token = authorization.replace('Bearer ', '');
-		return jwt.verify(token, JWT_SECRET);
+		console.log(token);
+		if (token) return jwt.verify(token, JWT_SECRET);
 	}
 	return null;
 };
