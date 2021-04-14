@@ -15,5 +15,12 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  cache:
+    image: redis:alpine
+    ports:
+      - '6379:6379'
+    command: ['--requirepass "secret"']
+
 volumes:
   postgres:
