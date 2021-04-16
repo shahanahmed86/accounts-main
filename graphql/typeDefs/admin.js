@@ -9,16 +9,12 @@ export default gql`
 		updatedAt: Date
 	}
 
-	type AuthAdminPayload {
-		token: String!
-		user: Admin!
-	}
-
 	extend type Query {
 		loggedInAdmin: Admin! @auth(shouldAdmin: true)
 	}
 
 	extend type Mutation {
-		loginAdmin(username: String!, password: String!): AuthAdminPayload! @guest
+		loginAdmin(username: String!, password: String!): Admin! @guest(shouldAdmin: true)
+		adminSignOut: Boolean! @auth(shouldAdmin: true)
 	}
 `;

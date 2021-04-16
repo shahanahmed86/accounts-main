@@ -34,7 +34,7 @@ export default async (parent, { id, password, avatar, ...data }, context, info) 
 
 		if (data.name) await validation.nameSchema.validateAsync(data.name);
 
-		if (data.email && data.email !== account.email) await emailValidator(data.email);
+		if (data.email && data.email !== account.email) await validation.emailSchema.validateAsync(data.email);
 
 		if (data.cell && data.cell !== account.cell) await validation.cellSchema.validateAsync(data.cell);
 

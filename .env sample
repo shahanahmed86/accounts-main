@@ -1,6 +1,6 @@
 BCRYPT_SALT=10
 
-JWT_SECRET=secret
+JWT_SECRET=jwt_secret
 
 NODE_ENV=development
 APP_PORT=4000
@@ -10,10 +10,10 @@ APP_HOST=localhost:4000
 
 REDIS_PORT=6379
 REDIS_HOST=localhost
-REDIS_PASSWORD=secret
+REDIS_PASSWORD=redis_secret
 
 SESSION_NAME=sid
 SESSION_SECRET=ssh!secret!
 SESSION_LIFETIME=86400000
 
-DATABASE_URL=postgresql://prisma:prisma@localhost:5432/dev
+DATABASE_URL=postgresql://<db_user>:<db_password>@localhost:5432/<db_name>

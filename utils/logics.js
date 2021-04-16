@@ -25,19 +25,6 @@ export const saveFile = (image, old) => {
 	});
 };
 
-export const emailValidator = async (email) => {
-	if (email.indexOf('@yahoo.com') !== -1) return;
-
-	const { valid, validators, reason } = await validate(email);
-	console.log(validators[reason]);
-	if (!valid) {
-		if (validators[reason].reason.indexOf('The mail transaction has failed')) {
-			throw new ApolloError('Invalid email...');
-		}
-		throw new ApolloError(validators[reason].reason);
-	}
-};
-
 export const isColorCodeValid = (color) => /[0-9A-Fa-f]{6}/g.test(color);
 
 export const convertDateToISO = (date) => moment.utc(date).toISOString();
@@ -117,13 +104,11 @@ export const maintainLogs = async (id) => {
 		}
 	});
 
-	let logs = transaction.logs;
-	delete transaction.logs;
+	let logs = delete transaction.logs;
 
 	if (logs) {
-		let data = JSON.parse(logs);
-		if (Array.isArray(data)) data.push(transaction);
-		else data = [data, transaction];
+		const data = JSON.parse(logs);
+		data.push(transaction);
 		logs = JSON.stringify(data);
 	} else {
 		logs = JSON.stringify([transaction]);

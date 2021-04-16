@@ -1,18 +1,23 @@
 import { AuthenticationError } from 'apollo-server-express';
-import jwt from 'jsonwebtoken';
+import { SESSION_NAME } from '../config';
 
-import { JWT_SECRET } from '../config';
+const signedIn = (req, keyId) => req.session[keyId];
 
-export const getDecodedToken = (req, doNotThrow) => {
-	const authorization = req.headers['authorization'];
-	if (!authorization && doNotThrow === false) {
-		throw new AuthenticationError('Login session not found...');
-	}
-	if (authorization) {
-		console.log(authorization);
-		const token = authorization.replace('Bearer ', '');
-		console.log(token);
-		if (token) return jwt.verify(token, JWT_SECRET);
-	}
-	return null;
+export const ensureSignedIn = (req, doNotThrow, keyId) => {
+	if (!signedIn(req, keyId) && !doNotThrow) throw new AuthenticationError('You must be signed in.');
+};
+
+export const ensureSignedOut = (req, keyId) => {
+	if (signedIn(req, keyId)) throw new AuthenticationError('You are already signed in.');
+};
+
+export const signOut = (req, res) => {
+	return new Promise((resolve, reject) => {
+		req.session.destroy((err) => {
+			if (err) reject(err);
+
+			res.clearCookie(SESSION_NAME);
+			resolve(true);
+		});
+	});
 };

@@ -28,7 +28,7 @@ import app from './express';
 		});
 		await server.start();
 
-		server.applyMiddleware({ app, path: '/graphql' });
+		server.applyMiddleware({ app, path: '/graphql', cors: false });
 
 		const httpServer = http.createServer(app);
 		server.installSubscriptionHandlers(httpServer);

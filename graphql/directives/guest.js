@@ -5,11 +5,12 @@ import { checkGuest } from '../../controller/middleware';
 class GuestDirective extends SchemaDirectiveVisitor {
 	visitFieldDefinition(field) {
 		const { resolve = defaultFieldResolver } = field;
+		const { shouldAdmin, shouldAccount } = this.args;
 
 		field.resolve = function (...args) {
 			const [, , context] = args;
 
-			checkGuest(false, false, context);
+			checkGuest(false, { shouldAdmin, shouldAccount }, context);
 
 			return resolve.apply(this, args);
 		};

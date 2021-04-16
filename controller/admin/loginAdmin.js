@@ -1,22 +1,20 @@
 import { compareSync } from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { AuthenticationError } from 'apollo-server-express';
 import { prisma, validation } from '../../utils';
-import { JWT_SECRET } from '../../config';
 
-export default async (parent, { username, password }) => {
+export default async (parent, { username, password }, context) => {
 	try {
 		await validation.usernameSchema.validateAsync(username);
 
-		const user = await prisma.admin.findUnique({ where: { username } });
-		if (!user) throw new AuthenticationError(`User not found...`);
+		const admin = await prisma.admin.findUnique({ where: { username } });
 
-		if (!compareSync(password, user.password)) throw new AuthenticationError('Password mismatched...');
+		if (!admin || !compareSync(password, admin.password)) {
+			throw new AuthenticationError('Incorrect username or password. Please try again.');
+		}
 
-		return {
-			token: jwt.sign({ adminId: user.id }, JWT_SECRET),
-			user
-		};
+		context.req.session.adminId = admin.id;
+
+		return admin;
 	} catch (error) {
 		console.error(error);
 		throw new AuthenticationError(error.message);

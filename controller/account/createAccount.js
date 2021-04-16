@@ -1,17 +1,23 @@
 import { hashSync } from 'bcryptjs';
 import { BCRYPT_SALT } from '../../config';
-import { checkData, emailValidator, prisma, saveFile, validation } from '../../utils';
+import { checkData, prisma, saveFile, validation } from '../../utils';
 
 export default async (parent, { password, avatar, ...data }, context, info) => {
 	try {
-		await emailValidator(data.email);
-
 		await validation.accountSchema.validateAsync({ ...data, password }, { abortEarly: 'false' });
 
 		await checkData({
 			tableRef: 'account',
 			key: 'username',
 			value: data.username,
+			title: data.username,
+			checkDuplication: true
+		});
+
+		await checkData({
+			tableRef: 'account',
+			key: 'cell',
+			value: data.cell,
 			title: data.username,
 			checkDuplication: true
 		});

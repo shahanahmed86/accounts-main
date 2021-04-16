@@ -1,5 +1,24 @@
 # accounts
 
+## Installation
+
+```sh
+# Clone (or fork) the repo
+git clone https://github.com/shahanahmed86/accounts-main.git && cd accounts-main
+
+# Fill out .env file with secrets (development only)
+cp .env.example .env
+
+# Install the deps
+npm install
+
+# dockerize your system then Run this command
+npm run up
+
+# run the server
+npm run dev
+```
+
 ## postgresql
 
 ```sh

@@ -2,6 +2,8 @@ export { default as accounts } from './accounts';
 
 export { default as account } from './account';
 
+export { default as accountSignOut } from './accountSignOut';
+
 export { default as createAccount } from './createAccount';
 
 export { default as deleteAccount } from './deleteAccount';

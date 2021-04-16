@@ -8,7 +8,7 @@ export default gql`
 		shouldAccount: Boolean = false
 		doNotThrow: Boolean = false
 	) on FIELD_DEFINITION
-	directive @guest on FIELD_DEFINITION
+	directive @guest(shouldAdmin: Boolean = false, shouldAccount: Boolean = false) on FIELD_DEFINITION
 
 	type Query {
 		_: Boolean
