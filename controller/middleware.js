@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-express';
-import { checkData, ensureSignedIn, ensureSignedOut, signOut } from '../utils';
+import { checkData, ensureSignedIn, ensureSignedOut } from '../utils';
 
 export const checkAuth = async (parent, { shouldAdmin, shouldAccount, doNotThrow }, { req, res }) => {
 	try {
@@ -29,7 +29,6 @@ export const checkAuth = async (parent, { shouldAdmin, shouldAccount, doNotThrow
 
 			req.user = account;
 		} else {
-			await signOut(req, res);
 			throw new AuthenticationError('You must be logged in...');
 		}
 	} catch (error) {
