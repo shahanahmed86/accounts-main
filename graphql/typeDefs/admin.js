@@ -5,6 +5,7 @@ export default gql`
 		id: String!
 		username: String!
 		password: String
+		role: String!
 		createdAt: Date
 		updatedAt: Date
 	}

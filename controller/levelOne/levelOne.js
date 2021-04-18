@@ -2,8 +2,8 @@ import { ApolloError } from 'apollo-server-express';
 import { checkData } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
-	const { id: userId, userType } = context.req.user;
-	switch (userType) {
+	const { id: userId, role } = context.req.user;
+	switch (role) {
 		case 'admin': {
 			return checkData({ tableRef: 'levelOne', key: 'id', value: id, title: 'Account' });
 		}
@@ -13,7 +13,7 @@ export default async (parent, { id }, context, info) => {
 				key: 'id',
 				value: id,
 				title: 'Account',
-				pKey: userType,
+				pKey: role,
 				pValue: userId,
 				checkSuspension: true
 			});

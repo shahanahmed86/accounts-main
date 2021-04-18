@@ -13,6 +13,7 @@ export default async (parent, { username, password }, context) => {
 
 		context.req.session.accountId = account.id;
 
+		account.role = 'account';
 		return account;
 	} catch (error) {
 		console.error(error);

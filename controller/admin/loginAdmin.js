@@ -14,6 +14,7 @@ export default async (parent, { username, password }, context) => {
 
 		context.req.session.adminId = admin.id;
 
+		admin.role = 'admin';
 		return admin;
 	} catch (error) {
 		console.error(error);

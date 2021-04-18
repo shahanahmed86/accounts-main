@@ -2,17 +2,17 @@ import { checkData, prisma, validation } from '../../utils';
 
 export default async (parent, { id, ...data }, context, info) => {
 	try {
-		const { id: userId, userType } = context.req.user;
+		const { id: userId, role } = context.req.user;
 
 		const where = { tableRef: 'levelTwo', key: 'id', value: id, title: 'Account' };
-		if (userType !== 'admin') {
-			where.pKey = userType;
+		if (role !== 'admin') {
+			where.pKey = role;
 			where.pValue = userId;
 		}
 		const levelTwo = await checkData(where);
 
 		if (data.isSuspended === false) {
-			if (userType !== 'admin') {
+			if (role !== 'admin') {
 				return {
 					success: false,
 					message: 'Only admin can restore such account...'

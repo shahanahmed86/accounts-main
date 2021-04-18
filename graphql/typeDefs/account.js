@@ -17,6 +17,7 @@ export default gql`
 		debits: [Debit!] @auth(shouldAccount: true, shouldAdmin: true)
 		credits: [Credit!] @auth(shouldAccount: true, shouldAdmin: true)
 		isSuspended: Boolean!
+		role: String!
 		createdAt: Date!
 		updatedAt: Date!
 	}

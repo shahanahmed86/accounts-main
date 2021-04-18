@@ -1,14 +1,14 @@
 import { checkData, prisma } from '../../utils';
 
 export default async (parent, { id }, context, info) => {
-	const { id: userId, userType } = context.req.user;
+	const { id: userId, role } = context.req.user;
 
 	const levelThree = await checkData({
 		tableRef: 'levelThree',
 		key: 'id',
 		value: id,
 		title: 'Account',
-		pKey: userType,
+		pKey: role,
 		pValue: userId
 	});
 

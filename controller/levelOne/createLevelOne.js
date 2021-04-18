@@ -4,7 +4,7 @@ export default async (parent, data, context, info) => {
 	try {
 		await validation.levelSchema.validateAsync({ name: data.name, nature: data.nature }, { abortEarly: 'false' });
 
-		const { id: userId, userType } = context.req.user;
+		const { id: userId, role } = context.req.user;
 
 		await Promise.all(
 			Object.keys(data).map((key) => {
@@ -13,7 +13,7 @@ export default async (parent, data, context, info) => {
 					key,
 					value: data[key],
 					title: data[key],
-					pKey: userType,
+					pKey: role,
 					pValue: userId,
 					checkDuplication: true
 				});

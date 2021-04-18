@@ -2,8 +2,8 @@ import { ApolloError } from 'apollo-server-express';
 import { prisma } from '../../utils';
 
 export default (parent, args, context, info) => {
-	const { id: userId, userType } = context.req.user;
-	switch (userType) {
+	const { id: userId, role } = context.req.user;
+	switch (role) {
 		case 'admin': {
 			return prisma.levelFour.findMany();
 		}

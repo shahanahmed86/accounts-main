@@ -4,14 +4,14 @@ export default async (parent, { levelTwoId, ...data }, context, info) => {
 	try {
 		await validation.nameSchema.validateAsync(data.name);
 
-		const { id: userId, userType } = context.req.user;
+		const { id: userId, role } = context.req.user;
 
 		await checkData({
 			tableRef: 'levelTwo',
 			key: 'id',
 			value: levelTwoId,
 			title: 'Account',
-			pKey: userType,
+			pKey: role,
 			pValue: userId,
 			checkSuspension: true
 		});

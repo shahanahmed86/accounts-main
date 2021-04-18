@@ -12,7 +12,7 @@ export const checkAuth = async (parent, { shouldAdmin, shouldAccount, doNotThrow
 				title: 'Admin'
 			});
 			admin.password = null;
-			admin.userType = 'admin';
+			admin.role = 'admin';
 
 			req.user = admin;
 		} else if (shouldAccount && 'accountId' in req.session) {
@@ -25,7 +25,7 @@ export const checkAuth = async (parent, { shouldAdmin, shouldAccount, doNotThrow
 				checkSuspension: true
 			});
 			account.password = null;
-			account.userType = 'account';
+			account.role = 'account';
 
 			req.user = account;
 		} else {

@@ -54,10 +54,10 @@ export const checkData = async ({
 };
 
 export const filterRelationData = async ({ req, tableRef, id, ref, isRefSingle = false, checkSuspension = true }) => {
-	const { id: userId, userType } = req.user;
+	const { id: userId, role } = req.user;
 	const where = { id };
-	if (userType === 'account') {
-		if (tableRef !== userType) where[userType] = { id: userId };
+	if (role === 'account') {
+		if (tableRef !== role) where[role] = { id: userId };
 		if (checkSuspension) {
 			if (isRefSingle) {
 				const data = await prisma[tableRef].findFirst({ where })[ref]();

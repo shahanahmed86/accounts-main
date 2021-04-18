@@ -2,21 +2,21 @@ import { ApolloError } from 'apollo-server-express';
 import { checkDebitOrCreditRows, prisma, maintainLogs, checkData } from '../../utils';
 
 export default async (parent, { id, debitInputs, creditInputs, ...data }, context, info) => {
-	const { id: userId, userType } = context.req.user;
+	const { id: userId, role } = context.req.user;
 
 	await checkData({
 		tableRef: 'transaction',
 		key: 'id',
 		value: id,
 		title: 'Transaction',
-		pKey: userType,
+		pKey: role,
 		pValue: userId,
 		checkSuspension: true
 	});
 
-	await checkDebitOrCreditRows(debitInputs, userType, userId);
+	await checkDebitOrCreditRows(debitInputs, role, userId);
 
-	await checkDebitOrCreditRows(creditInputs, userType, userId);
+	await checkDebitOrCreditRows(creditInputs, role, userId);
 
 	const debitTotal = debitInputs.reduce((acc, cur) => (acc += cur.amount), 0);
 	const creditTotal = creditInputs.reduce((acc, cur) => (acc += cur.amount), 0);
