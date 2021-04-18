@@ -2,7 +2,7 @@ import { middleware } from '../controller';
 
 export const checkAuth = async (req, res, next) => {
 	try {
-		await middleware.checkAuth(false, { shouldBusiness: true, shouldAdmin: true }, { req, res });
+		await middleware.checkAuth(false, { shouldAccount: true, shouldAdmin: true }, { req, res });
 		next();
 	} catch (error) {
 		console.error(error);
